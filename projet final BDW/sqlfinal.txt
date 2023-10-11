@@ -1,0 +1,204 @@
+CREATE TABLE GROUPE(
+   nomG VARCHAR(50),
+   dateFG DATE,
+   dateSG DATE,
+   PRIMARY KEY(nomG)
+);
+ 
+CREATE TABLE MUSICIEN(
+   idM INT,
+   nomM VARCHAR(50),
+   prenomM VARCHAR(50),
+   nomSM VARCHAR(50),
+   PRIMARY KEY(idM)
+); 
+ 
+CREATE TABLE CHANSON(
+   idC INT NOT NULL AUTO_INCREMENT,
+   titreC VARCHAR(50),
+   dateC INT,
+   nomG VARCHAR(50),
+   PRIMARY KEY(idC),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG)
+);
+ 
+CREATE TABLE GENRE(
+   genreG VARCHAR(50),
+   PRIMARY KEY(genreG)
+);
+ 
+CREATE TABLE VERSION(
+   idC INT,
+   numV INT,
+   dureeV INT,
+   dateV INT,
+   nomFichierV VARCHAR(300),
+   PRIMARY KEY(idC, numV),
+   FOREIGN KEY(idC) REFERENCES CHANSON(idC)
+);
+ 
+CREATE TABLE PROPRIETE(
+   idp INT NOT NULL,
+   libellé VARCHAR(50),
+   PRIMARY KEY(idp)
+);
+ 
+CREATE TABLE LISTE_DE_LECTURE(
+   idL INT NOT NULL AUTO_INCREMENT,
+   titreL VARCHAR(50),
+   dateL INT,
+   PRIMARY KEY(idL)
+);
+ 
+CREATE TABLE ALBUM(
+   idA INT NOT NULL AUTO_INCREMENT,
+   dateSA DATE,
+   titre VARCHAR(255),
+   producteurA VARCHAR(50),
+   PRIMARY KEY(idA)
+);
+ 
+CREATE TABLE _STUDIO(
+   idA INT NOT NULL AUTO_INCREMENT,
+   nomIng VARCHAR(50),
+   PRIMARY KEY(idA),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE PERIODE(
+   datedeb DATE,
+   datefin DATE,
+   PRIMARY KEY(datedeb)
+);
+ 
+CREATE TABLE RelationC(
+   idR INT NOT NULL AUTO_INCREMENT,
+   reprise VARCHAR(50),
+   suite VARCHAR(50),
+   parodie VARCHAR(50),
+   PRIMARY KEY(idR)
+);
+ 
+CREATE TABLE COMPILATION(
+   idA INT NOT NULL AUTO_INCREMENT,
+   description VARCHAR(50),
+   PRIMARY KEY(idA),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE LIVE(
+   idA INT NOT NULL AUTO_INCREMENT,
+   idLi INT,
+   nomLi VARCHAR(50),
+   coordLi VARCHAR(50),
+   PRIMARY KEY(idA),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE MEMBRE(
+   nomG VARCHAR(50),
+   idM INT NOT NULL AUTO_INCREMENT,
+   datedeb DATE,
+   role VARCHAR(50),
+   fondateur BOOLEAN,
+   PRIMARY KEY(nomG, idM, datedeb),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG),
+   FOREIGN KEY(idM) REFERENCES MUSICIEN(idM),
+   FOREIGN KEY(datedeb) REFERENCES PERIODE(datedeb)
+);
+ 
+
+CREATE TABLE EST(
+   genreG VARCHAR(50),
+   idC INT,
+   numV INT,
+   PRIMARY KEY(genreG, idC, numV),
+   FOREIGN KEY(genreG) REFERENCES GENRE(genreG),
+   FOREIGN KEY(idC, numV) REFERENCES VERSION(idC, numV)
+);
+
+ 
+CREATE TABLE PARENT_DE_(
+   genreG VARCHAR(50),
+   genreG_1 VARCHAR(50),
+   PRIMARY KEY(genreG, genreG_1),
+   FOREIGN KEY(genreG) REFERENCES GENRE(genreG)
+);
+ 
+
+CREATE TABLE RELATION(
+   idC INT,
+   idC_1 INT,
+   idR INT,
+   PRIMARY KEY(idC, idC_1, idR),
+   FOREIGN KEY(idC) REFERENCES CHANSON(idC),
+   FOREIGN KEY(idC_1) REFERENCES CHANSON(idC),
+   FOREIGN KEY(idR) REFERENCES RelationC(idR)
+);
+
+ 
+CREATE TABLE INCLUS(
+   idC INT,
+   numV INT,
+   idL INT,
+   PRIMARY KEY(idC, numV, idL),
+   FOREIGN KEY(idC, numV) REFERENCES VERSION(idC, numV),
+   FOREIGN KEY(idL) REFERENCES LISTE_DE_LECTURE(idL)
+);
+ 
+CREATE TABLE INCLUS1(
+   idC INT,
+   numV INT,
+   idA INT,
+   numP INT,
+   PRIMARY KEY(idC, numV, idA),
+   FOREIGN KEY(idC, numV) REFERENCES VERSION(idC, numV),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE PRODUIRE(
+   nomG VARCHAR(50),
+   idA INT,
+   PRIMARY KEY(nomG, idA),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE ENREGISTRER(
+   nomG VARCHAR(50),
+   idA INT,
+   PRIMARY KEY(nomG, idA),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE COLLABORATION(
+   nomG VARCHAR(50),
+   idM INT,
+   idA INT,
+   commentaire VARCHAR(50),
+   PRIMARY KEY(nomG, idM, idA),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG),
+   FOREIGN KEY(idM) REFERENCES MUSICIEN(idM),
+   FOREIGN KEY(idA) REFERENCES ALBUM(idA)
+);
+ 
+CREATE TABLE Jouer_par(
+   nomG VARCHAR(50),
+   idC INT,
+   numV INT,
+   PRIMARY KEY(nomG, idC, numV),
+   FOREIGN KEY(nomG) REFERENCES GROUPE(nomG),
+   FOREIGN KEY(idC, numV) REFERENCES VERSION(idC, numV)
+);
+ 
+CREATE TABLE A_DES_(
+   idC INT,
+   numV INT,
+   idp INT,
+   valp INT,
+   PRIMARY KEY(idC, numV, idp),
+   FOREIGN KEY(idC, numV) REFERENCES VERSION(idC, numV),
+   FOREIGN KEY(idp) REFERENCES PROPRIETE(idp)
+);
+ 
